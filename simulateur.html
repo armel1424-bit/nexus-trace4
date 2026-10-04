@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS TRACE · Voir ce qui se passe réellement derrière une connexion</title>
+<meta name="description" content="NEXUS TRACE : huit simulations pour voir et manipuler le trajet d’une requête, du DNS au déploiement. Gratuit, sans compte, sans collecte de données.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#246BFD">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Aller au contenu</a>
+
+<header class="top">
+  <div class="brand">
+    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#246BFD"/><circle cx="9" cy="23" r="3" fill="#fff"/><circle cx="23" cy="9" r="3" fill="#fff"/><path d="M11 21 21 11" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M9 9h4M19 23h4" stroke="#fff" stroke-opacity=".55" stroke-width="2.2" stroke-linecap="round"/></svg>
+    <div>
+      <h1>NEXUS TRACE</h1>
+      <p>Voir ce qui se passe réellement derrière une connexion</p>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="overall">
+      <span id="overall">0 / 8 scénarios terminés</span>
+      <span class="bar" aria-hidden="true"><span id="overallBar"></span></span>
+    </div>
+    <button type="button" id="aboutBtn" class="btn ghost">À propos</button>
+    <button type="button" id="themeBtn" class="btn ghost" aria-pressed="false">Thème sombre</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="nav" aria-label="Scénarios">
+    <h2 class="nav-title">J’ouvre un site. Trace ce qui se passe.</h2>
+    <ol id="navList"></ol>
+  </nav>
+
+  <main id="main" class="main">
+    <section class="lead">
+      <p class="chapter" id="sChapter"></p>
+      <h2 id="sTitle"></h2>
+      <p id="sObjective"></p>
+    </section>
+
+    <section class="statusbar" aria-label="État de la requête">
+      <dl>
+        <div><dt>Origine</dt><dd id="f-origin" class="val">—</dd></div>
+        <div><dt>Destination</dt><dd id="f-dest" class="val">—</dd></div>
+        <div><dt>Étape</dt><dd id="f-stage" class="val">—</dd></div>
+        <div><dt>Flux</dt><dd id="f-flow" class="val">—</dd></div>
+        <div><dt>Temps simulé</dt><dd id="f-time" class="val">0 ms</dd></div>
+        <div><dt>Statut</dt><dd id="f-status" class="val idle">Prêt</dd></div>
+        <div class="wide"><dt>Réponse</dt><dd id="f-resp" class="val">—</dd></div>
+      </dl>
+    </section>
+
+    <section class="stage-card">
+      <div class="tabs" role="tablist" aria-label="Vue">
+        <button type="button" role="tab" id="tabArch" aria-selected="true" aria-controls="viewArch">Vue architecture</button>
+        <button type="button" role="tab" id="tabTraffic" aria-selected="false" aria-controls="viewTraffic">Vue trafic</button>
+        <span class="tab-hint" id="stageHint"></span>
+      </div>
+      <div id="viewArch" role="tabpanel" aria-labelledby="tabArch">
+        <svg id="stage" class="stage" aria-label="Schéma de l’architecture simulée"></svg>
+      </div>
+      <div id="viewTraffic" role="tabpanel" aria-labelledby="tabTraffic" hidden>
+        <div class="table-wrap">
+          <table class="traffic">
+            <thead><tr><th scope="col">#</th><th scope="col">Échange</th><th scope="col">Flux</th><th scope="col">Durée</th><th scope="col">Chronologie</th></tr></thead>
+            <tbody id="trafficBody"></tbody>
+          </table>
+        </div>
+        <p class="traffic-total" id="trafficTotal"></p>
+      </div>
+      <div class="caption" id="caption" aria-live="polite"></div>
+      <div class="controls">
+        <button type="button" id="btnPlay" class="btn primary">Lancer</button>
+        <button type="button" id="btnStep" class="btn">Étape suivante</button>
+        <button type="button" id="btnPause" class="btn" disabled>Pause</button>
+        <button type="button" id="btnReset" class="btn ghost">Réinitialiser</button>
+        <span class="step-info" id="stepInfo"></span>
+        <label class="speed">Vitesse
+          <select id="speed"><option value="0.5">× 0,5</option><option value="1" selected>× 1</option><option value="2">× 2</option></select>
+        </label>
+      </div>
+    </section>
+
+    <section class="results" aria-label="Résultat de la simulation">
+      <div id="metrics" class="metrics"></div>
+      <div id="verdict" class="verdict empty" aria-live="polite"></div>
+      <div id="compare" class="compare"></div>
+    </section>
+  </main>
+
+  <aside class="panel" aria-label="Guide du scénario">
+    <div class="modes" role="group" aria-label="Mode">
+      <button type="button" id="modeGuided" aria-pressed="true">Guidé</button>
+      <button type="button" id="modeFree" aria-pressed="false">Libre</button>
+    </div>
+    <div id="guide"></div>
+    <div id="free" hidden></div>
+  </aside>
+</div>
+
+<footer class="foot">
+  <p>Simulation pédagogique : les temps et les chiffres sont des ordres de grandeur. Aucun réseau réel n’est utilisé, aucun compte n’est demandé, aucune donnée n’est envoyée. Seule ta progression est gardée dans ton navigateur.</p>
+  <p>Dispositif compagnon du livre <em>DIGITAL MINDS 04 · NEXUS</em>.</p>
+</footer>
+
+<dialog id="about" aria-labelledby="aboutTitle">
+  <h2 id="aboutTitle">À propos de NEXUS TRACE</h2>
+  <p>Le livre explique. NEXUS TRACE te laisse <strong>voir et manipuler</strong> ce que le livre décrit : le trajet d’une requête, le DNS, le routage, la saturation, la répartition de charge, le cache, la panne et le déploiement.</p>
+  <p>Chaque scénario suit la même boucle : <strong>observe, trace, comprends, modifie, teste, explique</strong>. Tu prends une décision, puis tu vois ce qu’elle change.</p>
+  <p>Tout est simulé dans ton navigateur. Rien n’est envoyé, rien n’est collecté. Ta progression est enregistrée localement, et tu peux l’effacer en vidant les données du site.</p>
+  <button type="button" id="aboutClose" class="btn primary">Fermer</button>
+</dialog>
+
+<script src="assets/js/engine.js"></script>
+<script src="assets/js/scenarios-1.js"></script>
+<script src="assets/js/scenarios-2.js"></script>
+<script src="assets/js/stage.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

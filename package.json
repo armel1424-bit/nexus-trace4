@@ -1,0 +1,11 @@
+{
+  "name": "nexus-trace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NEXUS TRACE : simulations interactives du livre DIGITAL MINDS 04 — NEXUS. Site statique, sans dépendance.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "test": "node tests/sim.test.js",
+    "start": "npx --yes serve . -l 3000"
+  }
+}
